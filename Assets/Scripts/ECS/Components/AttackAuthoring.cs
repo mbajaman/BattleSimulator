@@ -10,6 +10,9 @@ public class AttackAuthoring : MonoBehaviour
     [SerializeField]
     private float _attackSpeed;
 
+    [SerializeField]
+    private float _attackRange;
+
     class Baker : Baker<AttackAuthoring>
     {
         public override void Bake(AttackAuthoring authoring)
@@ -20,6 +23,7 @@ public class AttackAuthoring : MonoBehaviour
             {
                 attackDamage = authoring._attackDamage,
                 attackSpeed = authoring._attackSpeed,
+                attackRange = authoring._attackRange
             });
         }
     }
