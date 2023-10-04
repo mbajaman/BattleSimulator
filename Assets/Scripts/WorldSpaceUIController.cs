@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class WorldSpaceUIController : MonoBehaviour
 {
-    HealthDisplaySystem healthDisplaySystem;
 
     [SerializeField] private GameObject _damageIconPrefab;
 
@@ -16,7 +15,6 @@ public class WorldSpaceUIController : MonoBehaviour
 
     private void OnEnable()
     {
-        healthDisplaySystem.CurrentHealth += HealthDisplayUI;
     }
 
     private void HealthDisplayUI(int health, float3 pos)

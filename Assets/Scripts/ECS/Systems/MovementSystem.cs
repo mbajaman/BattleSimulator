@@ -1,43 +1,57 @@
-using System.Collections.Generic;
+
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
+[UpdateAfter(typeof(TargetSystem))]
 public partial struct MovementSystem : ISystem
 {
-    //private List<Entity> _enemyEntities;
+    
 
     public void OnCreate(ref SystemState state)
     {
-        foreach (var (transform, entity) in 
-            SystemAPI.Query<RefRW<BlueTeamTag>>()
-            .WithEntityAccess())
-        {
-            //_enemyEntities.Add(entity);
-        }
     }
 
     public void OnUpdate(ref SystemState state)
     {
         var dt = SystemAPI.Time.DeltaTime;
 
-        foreach (var (transform, moveSpeed, entity) in
-            SystemAPI.Query<RefRW<LocalTransform>, RefRW<MoveSpeedComponent>>()
+        foreach (var (transform, moveComponent, attackProperties, entity) in
+            SystemAPI.Query<RefRW<LocalTransform>, RefRW<MoveSpeedComponent>, RefRO<AttackProperties>>()
             .WithAll<BlueTeamTag>()
             .WithEntityAccess())
         {
-            var dir = float3.zero;
+            transform.ValueRW.Position = MoveTowards(transform.ValueRW.Position, attackProperties.ValueRO.targetPosition, dt * moveComponent.ValueRO.moveSpeed);
+        }
 
-            transform.ValueRW.Position += new float3(1,0,0) * dt * moveSpeed.ValueRO.moveSpeed;
+        foreach (var (transform, moveComponent, attackProperties, entity) in
+            SystemAPI.Query<RefRW<LocalTransform>, RefRW<MoveSpeedComponent>, RefRO<AttackProperties>>()
+            .WithAll<RedTeamTag>()
+            .WithEntityAccess())
+        {
+            transform.ValueRW.Position = MoveTowards(transform.ValueRW.Position, attackProperties.ValueRO.targetPosition, dt * moveComponent.ValueRO.moveSpeed);
         }
     }
 
-    //private Entity RandomEnemy()
-    //{
-    //    int randomIndex = UnityEngine.Random.Range(0, _enemyEntities.Count);
-    //    Entity enemyEntity = _enemyEntities[randomIndex];
+    public static float3 MoveTowards(float3 current, float3 target, float step)
+    {
+        float deltaX = target.x - current.x;
+        float deltaY = target.y - current.y;
+        float deltaZ = target.z - current.z;
 
-    //    return enemyEntity;
-    //}
+        float sqdist = deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ;
+
+        if (sqdist == 0 || sqdist <= 0.5f)
+        {
+            return current;
+        }
+        var dist = (float)System.Math.Sqrt(sqdist);
+
+        return new float3(
+            current.x + deltaX / dist * step,
+            current.y + deltaY / dist * step,
+            current.z + deltaZ / dist * step
+            );
+    }
 }
