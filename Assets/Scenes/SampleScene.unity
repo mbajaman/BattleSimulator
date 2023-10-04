@@ -262,8 +262,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.4189867, y: -0.0855957, z: 0.03971253, w: 0.9030762}
-  m_LocalPosition: {x: 5.5490212, y: 6.8255095, z: -3.3566647}
+  m_LocalRotation: {x: 0.3844322, y: -0.09665935, z: 0.040514495, w: 0.9171845}
+  m_LocalPosition: {x: 4.8850765, y: 9.280617, z: -7.4371357}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -725,11 +725,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BattleField
-      objectReference: {fileID: 0}
-    - target: {fileID: 4459648651637332244, guid: 30a9b42d9a0f4134ea189b03c9ae707d,
-        type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
