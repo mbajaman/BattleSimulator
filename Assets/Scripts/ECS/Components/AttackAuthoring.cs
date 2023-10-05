@@ -36,7 +36,6 @@ public class AttackAuthoring : MonoBehaviour
             {
                 targetPosition = authoring._targetPosition,
                 targetAcquired = authoring._targetAcquired,
-                //targetLocationIndex = -1
             });
         }
     }

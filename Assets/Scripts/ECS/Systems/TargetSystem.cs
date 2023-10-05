@@ -1,45 +1,46 @@
-using System;
-using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Mathematics;
 using Unity.Transforms;
-using Unity.VisualScripting;
-using UnityEditor.Search;
-using UnityEngine;
 
 /* Generic Methods are not support!!! */
 
 //TODO: This class needs to be optimized by scheduling parallel jobs
+
+/// <summary>
+/// Handles targeting for each unit based on which team it is on.
+/// </summary>
 public partial class TargetSystem : SystemBase
 {
     protected override void OnUpdate()
     {
+        // Create EntityQueries and NativeArray container for entities
         EntityQuery blueTeam;
         EntityQuery redTeam;
         NativeArray<Entity> redTeamEntityArray;
         NativeArray<Entity> blueTeamEntityArray;
-        NativeArray<LocalTransform> redTeamLocalTransformArray;
-        NativeArray<LocalTransform> blueTeamLocalTransformArray;
 
+        // Get all Entities with BlueTeamTag and update their target information if any
         blueTeam = GetEntityQuery(ComponentType.ReadOnly<BlueTeamTag>(), ComponentType.ReadOnly<LocalTransform>());
         if (!blueTeam.IsEmpty) 
         {
-            blueTeamEntityArray = blueTeam.ToEntityArray(Allocator.TempJob);
-            blueTeamLocalTransformArray = blueTeam.ToComponentDataArray<LocalTransform>(Allocator.TempJob);
-            RedTeamTargetUpdate(blueTeamEntityArray, blueTeamLocalTransformArray);
+            blueTeamEntityArray = blueTeam.ToEntityArray(Allocator.TempJob); //Allocator needs to be a TempJob so it works inside Entitied.ForEach() Job
+            RedTeamTargetUpdate(blueTeamEntityArray);
         }
 
+        // Get all Entities with ReadTeamTag and update their target information if any
         redTeam = GetEntityQuery(ComponentType.ReadOnly<RedTeamTag>(), ComponentType.ReadOnly<LocalTransform>());
         if (!redTeam.IsEmpty)
         {
             redTeamEntityArray = redTeam.ToEntityArray(Allocator.TempJob);
-            redTeamLocalTransformArray = redTeam.ToComponentDataArray<LocalTransform>(Allocator.TempJob);
-            BlueTeamTargetUpdate(redTeamEntityArray, redTeamLocalTransformArray);
+            BlueTeamTargetUpdate(redTeamEntityArray);
         }
     }
 
-    private void BlueTeamTargetUpdate(NativeArray<Entity> entities, NativeArray<LocalTransform> localTransformArray)
+    /// <summary>
+    /// Update all target information in all Entities with BlueTeamTag
+    /// </summary>
+    /// <param name="entities"></param>
+    private void BlueTeamTargetUpdate(NativeArray<Entity> entities)
     {
         var random = UnityEngine.Random.Range(0, entities.Length);
 
@@ -56,18 +57,21 @@ public partial class TargetSystem : SystemBase
                             return;
                         }
                         attackProperties.targetUnit = entities[random];
-                        attackProperties.targetPosition = localTransformArray[random].Position;
+                        attackProperties.targetPosition = SystemAPI.GetComponent<LocalTransform>(entities[random]).Position;
                         attackProperties.targetAcquired = true;
                     }
                 ).Run();
 
-            // Dispose of the captured arrays and NativeArray when they are no longer needed
+            // Dispose of the Entitied Array
             entities.Dispose();
-            localTransformArray.Dispose();
         }
     }
 
-    private void RedTeamTargetUpdate(NativeArray<Entity> entities, NativeArray<LocalTransform> localTransformArray)
+    /// <summary>
+    /// Update all target information in all Entities with RedTeamTag
+    /// </summary>
+    /// <param name="entities" type="NativeArray"></param>
+    private void RedTeamTargetUpdate(NativeArray<Entity> entities)
     {
         var random = UnityEngine.Random.Range(0, entities.Length);
 
@@ -84,14 +88,13 @@ public partial class TargetSystem : SystemBase
                             return;
                         }
                         attackProperties.targetUnit = entities[random];
-                        attackProperties.targetPosition = localTransformArray[random].Position;
+                        attackProperties.targetPosition = SystemAPI.GetComponent<LocalTransform>(entities[random]).Position;
                         attackProperties.targetAcquired = true;
                     }
                 ).Run();
 
             // Dispose of the captured arrays and NativeArray when they are no longer needed
             entities.Dispose();
-            localTransformArray.Dispose();
         }
     }
 
