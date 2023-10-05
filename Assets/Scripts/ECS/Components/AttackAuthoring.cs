@@ -8,7 +8,7 @@ public class AttackAuthoring : MonoBehaviour
     private int _attackDamage;
 
     [SerializeField]
-    private float _attackSpeed;
+    private int _attackSpeed;
 
     [SerializeField]
     private float _attackRange;
@@ -36,7 +36,7 @@ public class AttackAuthoring : MonoBehaviour
             {
                 targetPosition = authoring._targetPosition,
                 targetAcquired = authoring._targetAcquired,
-                targetLocationIndex = -1
+                //targetLocationIndex = -1
             });
         }
     }
@@ -45,13 +45,13 @@ public class AttackAuthoring : MonoBehaviour
 public struct AttackComponent : IComponentData
 {
     public int attackDamage;
-    public float attackSpeed;
+    public int attackSpeed;
     public float attackRange;
 }
 
 public struct AttackProperties : IComponentData
 {
     public float3 targetPosition;
+    public Entity targetUnit;
     public bool targetAcquired;
-    public int targetLocationIndex;
 }

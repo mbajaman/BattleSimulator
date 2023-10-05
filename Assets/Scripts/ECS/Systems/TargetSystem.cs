@@ -1,75 +1,98 @@
+using System;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using Unity.VisualScripting;
+using UnityEditor.Search;
 using UnityEngine;
 
 /* Generic Methods are not support!!! */
 
-//TODO: This class needs to be cleaned up and optimized if possible
+//TODO: This class needs to be optimized by scheduling parallel jobs
 public partial class TargetSystem : SystemBase
 {
-    private List<float3> _blueTeamPositions = new List<float3>();
-    private List<float3> _redTeamPositions = new List<float3>();
     protected override void OnUpdate()
     {
-        Entities.WithName("Get_BlueTeam_Positions")
-            .WithAll<BlueTeamTag>()
-            .ForEach(
-                (ref LocalTransform transform) =>
-                {
-                    _blueTeamPositions.Add(transform.Position);
-                }
-            ).WithoutBurst().Run();
+        EntityQuery blueTeam;
+        EntityQuery redTeam;
+        NativeArray<Entity> redTeamEntityArray;
+        NativeArray<Entity> blueTeamEntityArray;
+        NativeArray<LocalTransform> redTeamLocalTransformArray;
+        NativeArray<LocalTransform> blueTeamLocalTransformArray;
 
-        Entities.WithName("Get_RedTeam_Positions")
-            .WithAll<RedTeamTag>()
-            .ForEach(
-                (ref LocalTransform transform) =>
-                {
-                    _redTeamPositions.Add(transform.Position);
-                }
-            ).WithoutBurst().Run();
+        blueTeam = GetEntityQuery(ComponentType.ReadOnly<BlueTeamTag>(), ComponentType.ReadOnly<LocalTransform>());
+        if (!blueTeam.IsEmpty) 
+        {
+            blueTeamEntityArray = blueTeam.ToEntityArray(Allocator.TempJob);
+            blueTeamLocalTransformArray = blueTeam.ToComponentDataArray<LocalTransform>(Allocator.TempJob);
+            RedTeamTargetUpdate(blueTeamEntityArray, blueTeamLocalTransformArray);
+        }
 
-        Entities
-            .WithAll<BlueTeamTag>()
-            .ForEach(
-                (ref AttackProperties attackProperties) =>
-                {
-                    if (attackProperties.targetAcquired == true)
+        redTeam = GetEntityQuery(ComponentType.ReadOnly<RedTeamTag>(), ComponentType.ReadOnly<LocalTransform>());
+        if (!redTeam.IsEmpty)
+        {
+            redTeamEntityArray = redTeam.ToEntityArray(Allocator.TempJob);
+            redTeamLocalTransformArray = redTeam.ToComponentDataArray<LocalTransform>(Allocator.TempJob);
+            BlueTeamTargetUpdate(redTeamEntityArray, redTeamLocalTransformArray);
+        }
+    }
+
+    private void BlueTeamTargetUpdate(NativeArray<Entity> entities, NativeArray<LocalTransform> localTransformArray)
+    {
+        var random = UnityEngine.Random.Range(0, entities.Length);
+
+        if (entities.Length != 0)
+        {
+            Entities
+                .WithAll<BlueTeamTag>()
+                .ForEach(
+                    (ref AttackProperties attackProperties) =>
                     {
-                        attackProperties.targetPosition = _redTeamPositions[attackProperties.targetLocationIndex];
-                        return;
+                        if (attackProperties.targetAcquired == true)
+                        {
+                            attackProperties.targetPosition = SystemAPI.GetComponent<LocalTransform>(attackProperties.targetUnit).Position;
+                            return;
+                        }
+                        attackProperties.targetUnit = entities[random];
+                        attackProperties.targetPosition = localTransformArray[random].Position;
+                        attackProperties.targetAcquired = true;
                     }
+                ).Run();
 
-                    var random = UnityEngine.Random.Range(0, _redTeamPositions.Count);
-                    attackProperties.targetPosition = _redTeamPositions[random];
-                    attackProperties.targetAcquired = true;
-                    attackProperties.targetLocationIndex = random;
-                }
-            ).WithoutBurst().Run();
+            // Dispose of the captured arrays and NativeArray when they are no longer needed
+            entities.Dispose();
+            localTransformArray.Dispose();
+        }
+    }
 
-        Entities
-            .WithAll<RedTeamTag>()
-            .ForEach(
-                (ref AttackProperties attackProperties) =>
-                {
-                    if (attackProperties.targetAcquired == true)
+    private void RedTeamTargetUpdate(NativeArray<Entity> entities, NativeArray<LocalTransform> localTransformArray)
+    {
+        var random = UnityEngine.Random.Range(0, entities.Length);
+
+        if (entities.Length != 0)
+        {
+            Entities
+                .WithAll<RedTeamTag>()
+                .ForEach(
+                    (ref AttackProperties attackProperties) =>
                     {
-                        attackProperties.targetPosition = _blueTeamPositions[attackProperties.targetLocationIndex];
-                        return;
+                        if (attackProperties.targetAcquired == true)
+                        {
+                            attackProperties.targetPosition = SystemAPI.GetComponent<LocalTransform>(attackProperties.targetUnit).Position;
+                            return;
+                        }
+                        attackProperties.targetUnit = entities[random];
+                        attackProperties.targetPosition = localTransformArray[random].Position;
+                        attackProperties.targetAcquired = true;
                     }
+                ).Run();
 
-                    var random = UnityEngine.Random.Range(0, _blueTeamPositions.Count);
-                    attackProperties.targetPosition = _blueTeamPositions[random];
-                    attackProperties.targetAcquired = true;
-                    attackProperties.targetLocationIndex = random;
-                }
-            ).WithoutBurst().Run();
-
-        _blueTeamPositions.Clear();
-        _redTeamPositions.Clear();
+            // Dispose of the captured arrays and NativeArray when they are no longer needed
+            entities.Dispose();
+            localTransformArray.Dispose();
+        }
     }
 
 }
