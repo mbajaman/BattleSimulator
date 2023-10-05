@@ -5,16 +5,9 @@ using Unity.Mathematics;
 using Unity.Transforms;
 
 [UpdateAfter(typeof(TargetSystem))]
-[BurstCompile]
 public partial struct MovementSystem : ISystem
 {
-    
 
-    public void OnCreate(ref SystemState state)
-    {
-    }
-
-    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         var dt = SystemAPI.Time.DeltaTime;

@@ -1,6 +1,7 @@
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Transforms;
+using Unity.Mathematics;
 
 /* Generic Methods are not support!!! */
 
@@ -11,8 +12,21 @@ using Unity.Transforms;
 /// </summary>
 public partial class TargetSystem : SystemBase
 {
+    Unity.Mathematics.Random random;
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+
+        // Initialize the random generator with a seed
+        random = new Random((uint)UnityEngine.Random.Range(1, 10000));
+    }
+
     protected override void OnUpdate()
     {
+        // Make sure to use "random" as a parameter in the ForEach loop
+        Random localRandom = random;
+
         // Create EntityQueries and NativeArray container for entities
         EntityQuery blueTeam;
         EntityQuery redTeam;
@@ -23,8 +37,8 @@ public partial class TargetSystem : SystemBase
         blueTeam = GetEntityQuery(ComponentType.ReadOnly<BlueTeamTag>(), ComponentType.ReadOnly<LocalTransform>());
         if (!blueTeam.IsEmpty) 
         {
-            blueTeamEntityArray = blueTeam.ToEntityArray(Allocator.TempJob); //Allocator needs to be a TempJob so it works inside Entitied.ForEach() Job
-            RedTeamTargetUpdate(blueTeamEntityArray);
+            blueTeamEntityArray = blueTeam.ToEntityArray(Allocator.TempJob); //Allocator needs to be a TempJob so it works inside Entities.ForEach()
+            RedTeamTargetUpdate(blueTeamEntityArray, localRandom);
         }
 
         // Get all Entities with ReadTeamTag and update their target information if any
@@ -32,7 +46,7 @@ public partial class TargetSystem : SystemBase
         if (!redTeam.IsEmpty)
         {
             redTeamEntityArray = redTeam.ToEntityArray(Allocator.TempJob);
-            BlueTeamTargetUpdate(redTeamEntityArray);
+            BlueTeamTargetUpdate(redTeamEntityArray, localRandom);
         }
     }
 
@@ -40,10 +54,8 @@ public partial class TargetSystem : SystemBase
     /// Update all target information in all Entities with BlueTeamTag
     /// </summary>
     /// <param name="entities"></param>
-    private void BlueTeamTargetUpdate(NativeArray<Entity> entities)
+    private void BlueTeamTargetUpdate(NativeArray<Entity> entities, Random localRandom)
     {
-        var random = UnityEngine.Random.Range(0, entities.Length);
-
         if (entities.Length != 0)
         {
             Entities
@@ -51,6 +63,7 @@ public partial class TargetSystem : SystemBase
                 .ForEach(
                     (ref AttackProperties attackProperties) =>
                     {
+                        var random = localRandom.NextInt(0, entities.Length);
                         if (attackProperties.targetAcquired == true)
                         {
                             attackProperties.targetPosition = SystemAPI.GetComponent<LocalTransform>(attackProperties.targetUnit).Position;
@@ -71,10 +84,8 @@ public partial class TargetSystem : SystemBase
     /// Update all target information in all Entities with RedTeamTag
     /// </summary>
     /// <param name="entities" type="NativeArray"></param>
-    private void RedTeamTargetUpdate(NativeArray<Entity> entities)
+    private void RedTeamTargetUpdate(NativeArray<Entity> entities, Random localRandom)
     {
-        var random = UnityEngine.Random.Range(0, entities.Length);
-
         if (entities.Length != 0)
         {
             Entities
@@ -82,6 +93,7 @@ public partial class TargetSystem : SystemBase
                 .ForEach(
                     (ref AttackProperties attackProperties) =>
                     {
+                        var random = localRandom.NextInt(0, entities.Length);
                         if (attackProperties.targetAcquired == true)
                         {
                             attackProperties.targetPosition = SystemAPI.GetComponent<LocalTransform>(attackProperties.targetUnit).Position;
