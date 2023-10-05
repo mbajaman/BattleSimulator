@@ -1,10 +1,11 @@
 
+using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 
 [UpdateAfter(typeof(TargetSystem))]
+[BurstCompile]
 public partial struct MovementSystem : ISystem
 {
     
@@ -13,6 +14,7 @@ public partial struct MovementSystem : ISystem
     {
     }
 
+    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         var dt = SystemAPI.Time.DeltaTime;
@@ -46,6 +48,7 @@ public partial struct MovementSystem : ISystem
         {
             return current;
         }
+
         var dist = (float)System.Math.Sqrt(sqdist);
 
         return new float3(
