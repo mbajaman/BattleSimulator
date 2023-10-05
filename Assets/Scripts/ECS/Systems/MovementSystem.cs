@@ -19,24 +19,34 @@ public partial struct MovementSystem : ISystem
     {
         var dt = SystemAPI.Time.DeltaTime;
 
-        foreach (var (transform, moveComponent, attackProperties, entity) in
-            SystemAPI.Query<RefRW<LocalTransform>, RefRW<MoveSpeedComponent>, RefRO<AttackProperties>>()
+        foreach (var (transform, moveComponent, attackProperties, attackComponent, entity) in
+            SystemAPI.Query<RefRW<LocalTransform>, RefRW<MoveSpeedComponent>, RefRO<AttackProperties>, RefRO<AttackComponent>>()
             .WithAll<BlueTeamTag>()
             .WithEntityAccess())
         {
-            transform.ValueRW.Position = MoveTowards(transform.ValueRW.Position, attackProperties.ValueRO.targetPosition, dt * moveComponent.ValueRO.moveSpeed);
+            transform.ValueRW.Position = MoveTowards(
+                transform.ValueRW.Position,
+                attackProperties.ValueRO.targetPosition,
+                dt * moveComponent.ValueRO.moveSpeed,
+                attackComponent.ValueRO.attackRange
+            );
         }
 
-        foreach (var (transform, moveComponent, attackProperties, entity) in
-            SystemAPI.Query<RefRW<LocalTransform>, RefRW<MoveSpeedComponent>, RefRO<AttackProperties>>()
+        foreach (var (transform, moveComponent, attackProperties, attackComponent, entity) in
+            SystemAPI.Query<RefRW<LocalTransform>, RefRW<MoveSpeedComponent>, RefRO<AttackProperties>, RefRO<AttackComponent>>()
             .WithAll<RedTeamTag>()
             .WithEntityAccess())
         {
-            transform.ValueRW.Position = MoveTowards(transform.ValueRW.Position, attackProperties.ValueRO.targetPosition, dt * moveComponent.ValueRO.moveSpeed);
+            transform.ValueRW.Position = MoveTowards(
+                transform.ValueRW.Position, 
+                attackProperties.ValueRO.targetPosition, 
+                dt * moveComponent.ValueRO.moveSpeed,
+                attackComponent.ValueRO.attackRange
+                );
         }
     }
 
-    public static float3 MoveTowards(float3 current, float3 target, float step)
+    public static float3 MoveTowards(float3 current, float3 target, float step, float range)
     {
         float deltaX = target.x - current.x;
         float deltaY = target.y - current.y;
@@ -44,7 +54,7 @@ public partial struct MovementSystem : ISystem
 
         float sqdist = deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ;
 
-        if (sqdist == 0 || sqdist <= 0.5f)
+        if (sqdist == 0 || sqdist <= range - 0.5f)
         {
             return current;
         }
