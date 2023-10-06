@@ -4,15 +4,12 @@ using UnityEngine;
 
 public class PlaceableObject : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public bool Places { get; private set; }
+    public Vector3Int Size { get; private set; }
+    private Vector3[] Vertices;
 
-    // Update is called once per frame
-    void Update()
+    private void GetCOllliderVertexPositionsLocal()
     {
-        
+         
     }
 }

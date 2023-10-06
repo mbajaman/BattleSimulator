@@ -14,7 +14,7 @@ public partial struct MovementSystem : ISystem
 
         foreach (var (transform, moveComponent, attackProperties, attackComponent, entity) in
             SystemAPI.Query<RefRW<LocalTransform>, RefRW<MoveSpeedComponent>, RefRO<AttackProperties>, RefRO<AttackComponent>>()
-            .WithAll<BlueTeamTag>()
+            .WithAll<BlueTag>()
             .WithEntityAccess())
         {
             transform.ValueRW.Position = MoveTowards(
@@ -27,7 +27,7 @@ public partial struct MovementSystem : ISystem
 
         foreach (var (transform, moveComponent, attackProperties, attackComponent, entity) in
             SystemAPI.Query<RefRW<LocalTransform>, RefRW<MoveSpeedComponent>, RefRO<AttackProperties>, RefRO<AttackComponent>>()
-            .WithAll<RedTeamTag>()
+            .WithAll<RedTag>()
             .WithEntityAccess())
         {
             transform.ValueRW.Position = MoveTowards(

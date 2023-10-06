@@ -5,6 +5,7 @@ using UnityEngine;
 
 
 //TODO: This is highly inefficient and not clean code, need to separate into different systems or Jobs
+//TODO: Use IJobEntity to clean the below foreach idomatic expressions
 [UpdateAfter(typeof(TargetSystem))]
 public partial struct BattleSystem : ISystem
 {
@@ -21,7 +22,7 @@ public partial struct BattleSystem : ISystem
 
         foreach (var(transform, attackProperties, attackComponent, entity) in
             SystemAPI.Query<RefRW<LocalTransform>, RefRW<AttackProperties>, RefRO<AttackComponent>>()
-            .WithAll<BlueTeamTag>()
+            .WithAll<BlueTag>()
             .WithEntityAccess())
         {
             if (math.distance(transform.ValueRO.Position, attackProperties.ValueRO.targetPosition) < attackComponent.ValueRO.attackRange
@@ -56,7 +57,7 @@ public partial struct BattleSystem : ISystem
 
         foreach (var (transform, attackProperties, attackComponent, entity) in
             SystemAPI.Query<RefRW<LocalTransform>, RefRW<AttackProperties>, RefRO<AttackComponent>>()
-            .WithAll<RedTeamTag>()
+            .WithAll<RedTag>()
             .WithEntityAccess())
         {
             if (math.distance(transform.ValueRO.Position, attackProperties.ValueRO.targetPosition) < attackComponent.ValueRO.attackRange 
@@ -85,6 +86,7 @@ public partial struct BattleSystem : ISystem
                 }
             }
         }
+
         if (timer >= calculationInterval)
             timer = 0.0f;
     }
