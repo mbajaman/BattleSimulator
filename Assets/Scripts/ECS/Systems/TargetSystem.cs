@@ -10,6 +10,7 @@ using Unity.Mathematics;
 /// <summary>
 /// Handles targeting for each unit based on which team it is on.
 /// </summary>
+/// 
 public partial class TargetSystem : SystemBase
 {
     Unity.Mathematics.Random random;
@@ -33,8 +34,10 @@ public partial class TargetSystem : SystemBase
         NativeArray<Entity> redTeamEntityArray;
         NativeArray<Entity> blueTeamEntityArray;
 
-        // Get all Entities with BlueTeamTag and update their target information if any
-        blueTeam = GetEntityQuery(ComponentType.ReadOnly<BlueTeamTag>(), ComponentType.ReadOnly<LocalTransform>());
+        // Get all Entities with BlueTag and update their target information if any
+        blueTeam = GetEntityQuery(ComponentType.ReadOnly<BlueTag>(), ComponentType.ReadOnly<LocalTransform>());
+        RequireForUpdate(blueTeam); // Ensure system does not work unless BlueTags are in place
+
         if (!blueTeam.IsEmpty) 
         {
             blueTeamEntityArray = blueTeam.ToEntityArray(Allocator.TempJob); //Allocator needs to be a TempJob so it works inside Entities.ForEach()
@@ -42,7 +45,8 @@ public partial class TargetSystem : SystemBase
         }
 
         // Get all Entities with ReadTeamTag and update their target information if any
-        redTeam = GetEntityQuery(ComponentType.ReadOnly<RedTeamTag>(), ComponentType.ReadOnly<LocalTransform>());
+        redTeam = GetEntityQuery(ComponentType.ReadOnly<RedTag>(), ComponentType.ReadOnly<LocalTransform>());
+        RequireForUpdate(redTeam); // Ensure system does not work unless RedTags are in place
         if (!redTeam.IsEmpty)
         {
             redTeamEntityArray = redTeam.ToEntityArray(Allocator.TempJob);
@@ -51,7 +55,7 @@ public partial class TargetSystem : SystemBase
     }
 
     /// <summary>
-    /// Update all target information in all Entities with BlueTeamTag
+    /// Update all target information in all Entities with BlueTag
     /// </summary>
     /// <param name="entities"></param>
     private void BlueTeamTargetUpdate(NativeArray<Entity> entities, Random localRandom)
@@ -59,7 +63,7 @@ public partial class TargetSystem : SystemBase
         if (entities.Length != 0)
         {
             Entities
-                .WithAll<BlueTeamTag>()
+                .WithAll<BlueTag>()
                 .ForEach(
                     (ref AttackProperties attackProperties) =>
                     {
@@ -81,7 +85,7 @@ public partial class TargetSystem : SystemBase
     }
 
     /// <summary>
-    /// Update all target information in all Entities with RedTeamTag
+    /// Update all target information in all Entities with RedTag
     /// </summary>
     /// <param name="entities" type="NativeArray"></param>
     private void RedTeamTargetUpdate(NativeArray<Entity> entities, Random localRandom)
@@ -89,7 +93,7 @@ public partial class TargetSystem : SystemBase
         if (entities.Length != 0)
         {
             Entities
-                .WithAll<RedTeamTag>()
+                .WithAll<RedTag>()
                 .ForEach(
                     (ref AttackProperties attackProperties) =>
                     {
