@@ -26,7 +26,7 @@ PrefabInstance:
     - target: {fileID: 7033322469907674226, guid: f0e1d466cccecf64685ecaa18c85e0e7,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 7033322469907674226, guid: f0e1d466cccecf64685ecaa18c85e0e7,
         type: 3}
@@ -88,6 +88,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 7831980850663705022}
+    - targetCorrespondingSourceObject: {fileID: 841563210666359133, guid: f0e1d466cccecf64685ecaa18c85e0e7,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -1574551406456542627}
   m_SourcePrefab: {fileID: 100100000, guid: f0e1d466cccecf64685ecaa18c85e0e7, type: 3}
 --- !u!1 &8027630157662922896 stripped
 GameObject:
@@ -122,8 +126,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _attackDamage: 15
-  _attackSpeed: 0.75
+  _attackSpeed: 0
   _attackRange: 1
+  _targetPosition:
+    x: 0
+    y: 0
+    z: 0
+  _targetAcquired: 0
 --- !u!114 &1402834403725193145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -147,5 +156,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c06effd6829dc814dbce123d5d44b6a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-1574551406456542627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8027630157662922896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 577c3cdf8d75ea849b02c0fb304ae327, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

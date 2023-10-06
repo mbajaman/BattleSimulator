@@ -1635,6 +1635,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BattleField
       objectReference: {fileID: 0}
+    - target: {fileID: 4459648651637332244, guid: 30a9b42d9a0f4134ea189b03c9ae707d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
