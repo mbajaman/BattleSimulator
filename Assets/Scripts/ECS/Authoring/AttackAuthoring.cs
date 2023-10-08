@@ -19,6 +19,10 @@ public class AttackAuthoring : MonoBehaviour
     [SerializeField]
     private bool _targetAcquired;
 
+    [SerializeField]
+    private int unitIndex;
+
+    // Baking components for when GameObject is converted into Entities
     class Baker : Baker<AttackAuthoring>
     {
         public override void Bake(AttackAuthoring authoring)
@@ -32,7 +36,7 @@ public class AttackAuthoring : MonoBehaviour
                 attackRange = authoring._attackRange
             });
 
-            AddComponent(entity, new AttackProperties
+            AddComponent(entity, new TargetComponent
             {
                 targetPosition = authoring._targetPosition,
                 targetAcquired = authoring._targetAcquired,
@@ -41,16 +45,3 @@ public class AttackAuthoring : MonoBehaviour
     }
 }
 
-public struct AttackComponent : IComponentData
-{
-    public int attackDamage;
-    public int attackSpeed;
-    public float attackRange;
-}
-
-public struct AttackProperties : IComponentData
-{
-    public float3 targetPosition;
-    public Entity targetUnit;
-    public bool targetAcquired;
-}

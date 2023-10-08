@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4de8d5ce2734a1844b55870fa358dd59
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - blueTeamManagerSO: {fileID: 11400000, guid: dee2e2d74e53b42428ca4ec39425b942,
+      type: 2}
+  - blueUnit: {fileID: 2648597344674636012, guid: 314f0a090d5d083429092b315ed2485f,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

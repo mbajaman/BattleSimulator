@@ -65,17 +65,17 @@ public partial class TargetSystem : SystemBase
             Entities
                 .WithAll<BlueTag>()
                 .ForEach(
-                    (ref AttackProperties attackProperties) =>
+                    (ref TargetComponent TargetComponent) =>
                     {
                         var random = localRandom.NextInt(0, entities.Length);
-                        if (attackProperties.targetAcquired == true)
+                        if (TargetComponent.targetAcquired == true)
                         {
-                            attackProperties.targetPosition = SystemAPI.GetComponent<LocalTransform>(attackProperties.targetUnit).Position;
+                            TargetComponent.targetPosition = SystemAPI.GetComponent<LocalTransform>(TargetComponent.targetUnit).Position;
                             return;
                         }
-                        attackProperties.targetUnit = entities[random];
-                        attackProperties.targetPosition = SystemAPI.GetComponent<LocalTransform>(entities[random]).Position;
-                        attackProperties.targetAcquired = true;
+                        TargetComponent.targetUnit = entities[random];
+                        TargetComponent.targetPosition = SystemAPI.GetComponent<LocalTransform>(entities[random]).Position;
+                        TargetComponent.targetAcquired = true;
                     }
                 ).Run();
 
@@ -95,17 +95,17 @@ public partial class TargetSystem : SystemBase
             Entities
                 .WithAll<RedTag>()
                 .ForEach(
-                    (ref AttackProperties attackProperties) =>
+                    (ref TargetComponent TargetComponent) =>
                     {
                         var random = localRandom.NextInt(0, entities.Length);
-                        if (attackProperties.targetAcquired == true)
+                        if (TargetComponent.targetAcquired == true)
                         {
-                            attackProperties.targetPosition = SystemAPI.GetComponent<LocalTransform>(attackProperties.targetUnit).Position;
+                            TargetComponent.targetPosition = SystemAPI.GetComponent<LocalTransform>(TargetComponent.targetUnit).Position;
                             return;
                         }
-                        attackProperties.targetUnit = entities[random];
-                        attackProperties.targetPosition = SystemAPI.GetComponent<LocalTransform>(entities[random]).Position;
-                        attackProperties.targetAcquired = true;
+                        TargetComponent.targetUnit = entities[random];
+                        TargetComponent.targetPosition = SystemAPI.GetComponent<LocalTransform>(entities[random]).Position;
+                        TargetComponent.targetAcquired = true;
                     }
                 ).Run();
 

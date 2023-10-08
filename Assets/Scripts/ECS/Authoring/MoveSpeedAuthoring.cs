@@ -6,6 +6,7 @@ public class MoveSpeedAuthoring : MonoBehaviour
     [SerializeField]
     private float _moveSpeed;
 
+    // Baking components for when GameObject is converted into Entities
     class Baker : Baker<MoveSpeedAuthoring>
     {
         public override void Bake(MoveSpeedAuthoring authoring)
@@ -18,9 +19,4 @@ public class MoveSpeedAuthoring : MonoBehaviour
             });
         }
     }
-}
-
-public struct MoveSpeedComponent : IComponentData
-{
-    public float moveSpeed;
 }
