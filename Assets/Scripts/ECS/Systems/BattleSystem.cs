@@ -20,29 +20,29 @@ public partial struct BattleSystem : ISystem
 
         EntityCommandBuffer ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.World.Unmanaged);
 
-        foreach (var(transform, TargetComponent, attackComponent, entity) in
+        foreach (var(transform, targetComponent, attackComponent, entity) in
             SystemAPI.Query<RefRW<LocalTransform>, RefRW<TargetComponent>, RefRO<AttackComponent>>()
             .WithAll<BlueTag>()
             .WithEntityAccess())
         {
-            if (math.distance(transform.ValueRO.Position, TargetComponent.ValueRO.targetPosition) < attackComponent.ValueRO.attackRange
-                && TargetComponent.ValueRO.targetAcquired == true
-                && TargetComponent.ValueRO.targetUnit != Entity.Null)
+            if (math.distance(transform.ValueRO.Position, targetComponent.ValueRO.targetPosition) < attackComponent.ValueRO.attackRange
+                && targetComponent.ValueRO.targetAcquired == true
+                && targetComponent.ValueRO.targetUnit != Entity.Null)
             {
                 if (timer >= calculationInterval)
                 {
                     
-                    ecb.SetComponent(TargetComponent.ValueRO.targetUnit, new HealthComponent()
+                    ecb.SetComponent(targetComponent.ValueRO.targetUnit, new HealthComponent()
                     {
-                        healthPoints = SystemAPI.GetComponent<HealthComponent>(TargetComponent.ValueRO.targetUnit).healthPoints - (attackComponent.ValueRO.attackDamage * attackComponent.ValueRO.attackSpeed)
+                        healthPoints = SystemAPI.GetComponent<HealthComponent>(targetComponent.ValueRO.targetUnit).healthPoints - (attackComponent.ValueRO.attackDamage * attackComponent.ValueRO.attackSpeed)
                     });
 
-                    Debug.Log("Source: " + entity.Index + "\nEnemy Health: " + SystemAPI.GetComponent<HealthComponent>(TargetComponent.ValueRO.targetUnit).healthPoints);
+                    Debug.Log("Source: " + entity.Index + "\nEnemy Health: " + SystemAPI.GetComponent<HealthComponent>(targetComponent.ValueRO.targetUnit).healthPoints);
                 }
 
-                if(SystemAPI.GetComponent<HealthComponent>(TargetComponent.ValueRO.targetUnit).healthPoints <= 0)
+                if(SystemAPI.GetComponent<HealthComponent>(targetComponent.ValueRO.targetUnit).healthPoints <= 0)
                 {
-                    ecb.DestroyEntity(TargetComponent.ValueRO.targetUnit);
+                    ecb.DestroyEntity(targetComponent.ValueRO.targetUnit);
                     ecb.SetComponent(entity, new TargetComponent()
                     {
                         targetPosition = transform.ValueRO.Position,
@@ -55,28 +55,28 @@ public partial struct BattleSystem : ISystem
 
         EntityCommandBuffer ecb2 = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.World.Unmanaged);
 
-        foreach (var (transform, TargetComponent, attackComponent, entity) in
+        foreach (var (transform, targetComponent, attackComponent, entity) in
             SystemAPI.Query<RefRW<LocalTransform>, RefRW<TargetComponent>, RefRO<AttackComponent>>()
             .WithAll<RedTag>()
             .WithEntityAccess())
         {
-            if (math.distance(transform.ValueRO.Position, TargetComponent.ValueRO.targetPosition) < attackComponent.ValueRO.attackRange 
-                && TargetComponent.ValueRO.targetAcquired == true
-                && TargetComponent.ValueRO.targetUnit != Entity.Null)
+            if (math.distance(transform.ValueRO.Position, targetComponent.ValueRO.targetPosition) < attackComponent.ValueRO.attackRange 
+                && targetComponent.ValueRO.targetAcquired == true
+                && targetComponent.ValueRO.targetUnit != Entity.Null)
             {
                 if (timer >= calculationInterval)
                 {
-                    ecb2.SetComponent(TargetComponent.ValueRO.targetUnit, new HealthComponent()
+                    ecb2.SetComponent(targetComponent.ValueRO.targetUnit, new HealthComponent()
                     {
-                        healthPoints = SystemAPI.GetComponent<HealthComponent>(TargetComponent.ValueRO.targetUnit).healthPoints - (attackComponent.ValueRO.attackDamage * attackComponent.ValueRO.attackSpeed)
+                        healthPoints = SystemAPI.GetComponent<HealthComponent>(targetComponent.ValueRO.targetUnit).healthPoints - (attackComponent.ValueRO.attackDamage * attackComponent.ValueRO.attackSpeed)
                     });
 
-                    Debug.Log("Source: " + entity.Index + "\nEnemy Health: " + SystemAPI.GetComponent<HealthComponent>(TargetComponent.ValueRO.targetUnit).healthPoints);
+                    Debug.Log("Source: " + entity.Index + "\nEnemy Health: " + SystemAPI.GetComponent<HealthComponent>(targetComponent.ValueRO.targetUnit).healthPoints);
                 }
 
-                if (SystemAPI.GetComponent<HealthComponent>(TargetComponent.ValueRO.targetUnit).healthPoints <= 0)
+                if (SystemAPI.GetComponent<HealthComponent>(targetComponent.ValueRO.targetUnit).healthPoints <= 0)
                 {
-                    ecb2.DestroyEntity(TargetComponent.ValueRO.targetUnit);
+                    ecb2.DestroyEntity(targetComponent.ValueRO.targetUnit);
                     ecb2.SetComponent(entity, new TargetComponent()
                     {
                         targetPosition = transform.ValueRO.Position,

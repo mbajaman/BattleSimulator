@@ -13,7 +13,7 @@ using Unity.Mathematics;
 /// 
 public partial class TargetSystem : SystemBase
 {
-    Unity.Mathematics.Random random;
+    Random random;
 
     protected override void OnCreate()
     {
@@ -65,17 +65,17 @@ public partial class TargetSystem : SystemBase
             Entities
                 .WithAll<BlueTag>()
                 .ForEach(
-                    (ref TargetComponent TargetComponent) =>
+                    (ref TargetComponent targetComponent) =>
                     {
                         var random = localRandom.NextInt(0, entities.Length);
-                        if (TargetComponent.targetAcquired == true)
+                        if (targetComponent.targetAcquired == true)
                         {
-                            TargetComponent.targetPosition = SystemAPI.GetComponent<LocalTransform>(TargetComponent.targetUnit).Position;
+                            targetComponent.targetPosition = SystemAPI.GetComponent<LocalTransform>(targetComponent.targetUnit).Position;
                             return;
                         }
-                        TargetComponent.targetUnit = entities[random];
-                        TargetComponent.targetPosition = SystemAPI.GetComponent<LocalTransform>(entities[random]).Position;
-                        TargetComponent.targetAcquired = true;
+                        targetComponent.targetUnit = entities[random];
+                        targetComponent.targetPosition = SystemAPI.GetComponent<LocalTransform>(entities[random]).Position;
+                        targetComponent.targetAcquired = true;
                     }
                 ).Run();
 
@@ -95,17 +95,17 @@ public partial class TargetSystem : SystemBase
             Entities
                 .WithAll<RedTag>()
                 .ForEach(
-                    (ref TargetComponent TargetComponent) =>
+                    (ref TargetComponent targetComponent) =>
                     {
                         var random = localRandom.NextInt(0, entities.Length);
-                        if (TargetComponent.targetAcquired == true)
+                        if (targetComponent.targetAcquired == true)
                         {
-                            TargetComponent.targetPosition = SystemAPI.GetComponent<LocalTransform>(TargetComponent.targetUnit).Position;
+                            targetComponent.targetPosition = SystemAPI.GetComponent<LocalTransform>(targetComponent.targetUnit).Position;
                             return;
                         }
-                        TargetComponent.targetUnit = entities[random];
-                        TargetComponent.targetPosition = SystemAPI.GetComponent<LocalTransform>(entities[random]).Position;
-                        TargetComponent.targetAcquired = true;
+                        targetComponent.targetUnit = entities[random];
+                        targetComponent.targetPosition = SystemAPI.GetComponent<LocalTransform>(entities[random]).Position;
+                        targetComponent.targetAcquired = true;
                     }
                 ).Run();
 
