@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 324229063}
   - component: {fileID: 324229062}
   m_Layer: 0
-  m_Name: BlueUnitPrefabAuthoring
+  m_Name: EntityPrefabAuthoring
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
