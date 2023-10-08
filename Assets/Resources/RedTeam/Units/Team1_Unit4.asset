@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c1e77779fa6bfb244a8c3a05eece9991, type: 3}
-  m_Name: Team1_Unit3
+  m_Name: Team1_Unit4
   m_EditorClassIdentifier: 
-  index: 3
-  position: {x: 9, y: 0.5, z: 1}
+  index: 4
+  position: {x: 8, y: 0.5, z: 2}
   attackDamage: 10
   attackSpeed: 1
   attackRange: 1

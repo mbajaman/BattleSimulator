@@ -13,16 +13,16 @@ public class EntityPrefabAuthoring : MonoBehaviour
         public override void Bake(EntityPrefabAuthoring authoring)
         {
             // Get Entities of the prefabs
-            var blueUnitEntityPrefab = GetEntity(authoring.blueUnitPrefab, TransformUsageFlags.None);
-            var redUnitEntityPrefab = GetEntity(authoring.redUnitPrefab, TransformUsageFlags.None);
+            var blueUnitPrefabEntity = GetEntity(authoring.blueUnitPrefab, TransformUsageFlags.None);
+            var redUnitPrefabEntity = GetEntity(authoring.redUnitPrefab, TransformUsageFlags.None);
 
             // Add a EntityPrefabComponent which contains the prefab Entities from above
             var entity = GetEntity(TransformUsageFlags.Dynamic);
 
             AddComponent(entity, new EntityPrefabComponent()
             {
-                BlueUnit = blueUnitEntityPrefab,
-                RedUnit = redUnitEntityPrefab
+                BlueUnit = blueUnitPrefabEntity,
+                RedUnit = redUnitPrefabEntity
             });
 
         }
