@@ -13,7 +13,7 @@ using Unity.Mathematics;
 /// 
 public partial class TargetSystem : SystemBase
 {
-    Unity.Mathematics.Random random;
+    Random random;
 
     protected override void OnCreate()
     {
@@ -65,17 +65,17 @@ public partial class TargetSystem : SystemBase
             Entities
                 .WithAll<BlueTag>()
                 .ForEach(
-                    (ref AttackProperties attackProperties) =>
+                    (ref TargetComponent targetComponent) =>
                     {
                         var random = localRandom.NextInt(0, entities.Length);
-                        if (attackProperties.targetAcquired == true)
+                        if (targetComponent.targetAcquired == true)
                         {
-                            attackProperties.targetPosition = SystemAPI.GetComponent<LocalTransform>(attackProperties.targetUnit).Position;
+                            targetComponent.targetPosition = SystemAPI.GetComponent<LocalTransform>(targetComponent.targetUnit).Position;
                             return;
                         }
-                        attackProperties.targetUnit = entities[random];
-                        attackProperties.targetPosition = SystemAPI.GetComponent<LocalTransform>(entities[random]).Position;
-                        attackProperties.targetAcquired = true;
+                        targetComponent.targetUnit = entities[random];
+                        targetComponent.targetPosition = SystemAPI.GetComponent<LocalTransform>(entities[random]).Position;
+                        targetComponent.targetAcquired = true;
                     }
                 ).Run();
 
@@ -95,17 +95,17 @@ public partial class TargetSystem : SystemBase
             Entities
                 .WithAll<RedTag>()
                 .ForEach(
-                    (ref AttackProperties attackProperties) =>
+                    (ref TargetComponent targetComponent) =>
                     {
                         var random = localRandom.NextInt(0, entities.Length);
-                        if (attackProperties.targetAcquired == true)
+                        if (targetComponent.targetAcquired == true)
                         {
-                            attackProperties.targetPosition = SystemAPI.GetComponent<LocalTransform>(attackProperties.targetUnit).Position;
+                            targetComponent.targetPosition = SystemAPI.GetComponent<LocalTransform>(targetComponent.targetUnit).Position;
                             return;
                         }
-                        attackProperties.targetUnit = entities[random];
-                        attackProperties.targetPosition = SystemAPI.GetComponent<LocalTransform>(entities[random]).Position;
-                        attackProperties.targetAcquired = true;
+                        targetComponent.targetUnit = entities[random];
+                        targetComponent.targetPosition = SystemAPI.GetComponent<LocalTransform>(entities[random]).Position;
+                        targetComponent.targetAcquired = true;
                     }
                 ).Run();
 

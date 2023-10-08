@@ -1424,7 +1424,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &747452719
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1970,7 +1970,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1949719005}
   m_HandleRect: {fileID: 1949719004}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 1.0000006
   m_Size: 0.8333333
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -3303,7 +3303,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridLayout: {fileID: 2037437965}
   MainTilemap: {fileID: 1885001299}
-  tileBase: {fileID: 11400000, guid: ed8d3e2635827ab47a5dc81524a76a3f, type: 2}
+  tileBase: {fileID: 11400000, guid: 0a8241f9992059a4ebbae9ef4bea15fe, type: 2}
   prefab1: {fileID: 2648597344674636012, guid: 314f0a090d5d083429092b315ed2485f, type: 3}
   prefab2: {fileID: 8027630157662922896, guid: acd1dd56ad39623409f4fefe7a706ef8, type: 3}
 --- !u!156049354 &2037437965
@@ -3412,6 +3412,6 @@ SceneRoots:
   - {fileID: 26520892}
   - {fileID: 5740814617804051303}
   - {fileID: 2037437966}
+  - {fileID: 990595224}
   - {fileID: 1001019208}
   - {fileID: 1783964208}
-  - {fileID: 990595224}

@@ -12,30 +12,37 @@ public partial struct MovementSystem : ISystem
     {
         var dt = SystemAPI.Time.DeltaTime;
 
-        foreach (var (transform, moveComponent, attackProperties, attackComponent, entity) in
-            SystemAPI.Query<RefRW<LocalTransform>, RefRW<MoveSpeedComponent>, RefRO<AttackProperties>, RefRO<AttackComponent>>()
+        foreach (var (transform, moveComponent, targetComponent, attackComponent, entity) in
+            SystemAPI.Query<RefRW<LocalTransform>, RefRW<MoveSpeedComponent>, RefRO<TargetComponent>, RefRO<AttackComponent>>()
             .WithAll<BlueTag>()
             .WithEntityAccess())
         {
-            transform.ValueRW.Position = MoveTowards(
-                transform.ValueRW.Position,
-                attackProperties.ValueRO.targetPosition,
-                dt * moveComponent.ValueRO.moveSpeed,
-                attackComponent.ValueRO.attackRange
-            );
+            if(targetComponent.ValueRO.targetAcquired == true)
+            {
+                transform.ValueRW.Position = MoveTowards(
+                    transform.ValueRW.Position,
+                    targetComponent.ValueRO.targetPosition,
+                    dt * moveComponent.ValueRO.moveSpeed,
+                    attackComponent.ValueRO.attackRange
+                );
+            }
+
         }
 
-        foreach (var (transform, moveComponent, attackProperties, attackComponent, entity) in
-            SystemAPI.Query<RefRW<LocalTransform>, RefRW<MoveSpeedComponent>, RefRO<AttackProperties>, RefRO<AttackComponent>>()
+        foreach (var (transform, moveComponent, targetComponent, attackComponent, entity) in
+            SystemAPI.Query<RefRW<LocalTransform>, RefRW<MoveSpeedComponent>, RefRO<TargetComponent>, RefRO<AttackComponent>>()
             .WithAll<RedTag>()
             .WithEntityAccess())
         {
-            transform.ValueRW.Position = MoveTowards(
-                transform.ValueRW.Position, 
-                attackProperties.ValueRO.targetPosition, 
+            if (targetComponent.ValueRO.targetAcquired == true)
+            {
+                transform.ValueRW.Position = MoveTowards(
+                transform.ValueRW.Position,
+                targetComponent.ValueRO.targetPosition,
                 dt * moveComponent.ValueRO.moveSpeed,
                 attackComponent.ValueRO.attackRange
                 );
+            }
         }
     }
 

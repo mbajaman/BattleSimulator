@@ -3,6 +3,8 @@ using Unity.Entities;
 
 public class BlueTagAuthoring : MonoBehaviour
 {
+
+    // Baking components for when GameObject is converted into Entities
     class Baker : Baker<BlueTagAuthoring>
     {
         public override void Bake(BlueTagAuthoring authoring)
@@ -13,7 +15,4 @@ public class BlueTagAuthoring : MonoBehaviour
         }
     }
 }
-public struct BlueTag : IComponentData
-{
-    // Empty component used for tagging
-}
+

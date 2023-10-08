@@ -4,11 +4,12 @@ using Unity.Entities;
 public class HealthAuthoring : MonoBehaviour
 {
     [SerializeField]
-    private int _currentHealth;
+    public int _currentHealth;
 
     [SerializeField]
-    private int _maxHealth;
+    public int _maxHealth;
 
+    // Baking components for when GameObject is converted into Entities
     class Baker : Baker<HealthAuthoring>
     {
         public override void Bake(HealthAuthoring authoring)
@@ -22,10 +23,4 @@ public class HealthAuthoring : MonoBehaviour
             });
         }
     }
-}
-
-public struct HealthComponent : IComponentData
-{
-    public int healthPoints;
-    public int maxHealth;
 }
