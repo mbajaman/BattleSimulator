@@ -6,17 +6,18 @@ using UnityEngine;
 
 //TODO: This is highly inefficient and not clean code, need to separate into different systems or Jobs
 //TODO: Use IJobEntity to clean the below foreach idomatic expressions
+//TODO: Implement IJobEntity to be able to use Parallel ECB to schedule jobs in parallel
 [UpdateAfter(typeof(TargetSystem))]
 public partial struct BattleSystem : ISystem
 {
-    private float timer;
+    private float _timer;
 
     public void OnUpdate(ref SystemState state)
     {
         float calculationInterval = 1.0f;
         float deltaTime = Time.deltaTime;
         // Update the timer every frame
-        timer += deltaTime;
+        _timer += deltaTime;
 
         EntityCommandBuffer ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.World.Unmanaged);
 
@@ -29,7 +30,7 @@ public partial struct BattleSystem : ISystem
                 && targetComponent.ValueRO.targetAcquired == true
                 && targetComponent.ValueRO.targetUnit != Entity.Null)
             {
-                if (timer >= calculationInterval)
+                if (_timer >= calculationInterval)
                 {
                     
                     ecb.SetComponent(targetComponent.ValueRO.targetUnit, new HealthComponent()
@@ -64,7 +65,7 @@ public partial struct BattleSystem : ISystem
                 && targetComponent.ValueRO.targetAcquired == true
                 && targetComponent.ValueRO.targetUnit != Entity.Null)
             {
-                if (timer >= calculationInterval)
+                if (_timer >= calculationInterval)
                 {
                     ecb2.SetComponent(targetComponent.ValueRO.targetUnit, new HealthComponent()
                     {
@@ -87,7 +88,7 @@ public partial struct BattleSystem : ISystem
             }
         }
 
-        if (timer >= calculationInterval)
-            timer = 0.0f;
+        if (_timer >= calculationInterval)
+            _timer = 0.0f;
     }
 }

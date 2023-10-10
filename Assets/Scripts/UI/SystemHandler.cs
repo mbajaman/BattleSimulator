@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 
@@ -16,8 +17,11 @@ public class SystemHandler : MonoBehaviour
     [SerializeField]
     public GameObject _landingPanel;
 
+    private EntityManager _entityManager;
+
     public void Start()
     {
+        _entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
         _targetSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<TargetSystem>();        
         _targetSystem.Enabled = false;
     }
@@ -32,6 +36,9 @@ public class SystemHandler : MonoBehaviour
         _targetSystem.Enabled = true;
         World.DefaultGameObjectInjectionWorld.Unmanaged.GetExistingSystemState<MovementSystem>().Enabled = true;
         World.DefaultGameObjectInjectionWorld.Unmanaged.GetExistingSystemState<BattleSystem>().Enabled = true;
+
+        // Disable TeamSpawnerSystem
+        World.DefaultGameObjectInjectionWorld.Unmanaged.GetExistingSystemState<TeamSpawnerSystem>().Enabled = false;
     }
 
     public void StopBattle()
@@ -44,5 +51,20 @@ public class SystemHandler : MonoBehaviour
         _targetSystem.Enabled = false;
         World.DefaultGameObjectInjectionWorld.Unmanaged.GetExistingSystemState<MovementSystem>().Enabled = false;
         World.DefaultGameObjectInjectionWorld.Unmanaged.GetExistingSystemState<BattleSystem>().Enabled = false;
+        
+
+        // Remove leftover Units
+        EntityQuery query = _entityManager.CreateEntityQuery(typeof(HealthComponent));
+
+        NativeArray<Entity> entities = query.ToEntityArray(Allocator.TempJob);
+
+        foreach (Entity entity in entities)
+        {
+            _entityManager.DestroyEntity(entity);
+        }
+
+        // Spawn teams
+        World.DefaultGameObjectInjectionWorld.Unmanaged.GetExistingSystemState<TeamSpawnerSystem>().Enabled = true;
+
     }
 }
