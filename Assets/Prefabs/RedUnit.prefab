@@ -133,6 +133,7 @@ MonoBehaviour:
     y: 0
     z: 0
   _targetAcquired: 0
+  unitIndex: 0
 --- !u!114 &1402834403725193145
 MonoBehaviour:
   m_ObjectHideFlags: 0
