@@ -3,24 +3,53 @@ using Unity.Entities;
 using UnityEngine;
 
 /// <summary>
-/// Controls ECS systems behavior via UI buttons
+/// Controls ECS systems and UI panel behavior via UI buttons
 /// </summary>
 public class SystemHandler : MonoBehaviour
 {
     [SerializeField]
-    public GameObject _gamePanel;
+    private GameObject _gamePanel;
 
     [SerializeField]
-    public GameObject _landingPanel;
+    private GameObject _landingPanel;
+
+    [SerializeField]
+    private GameObject _gameOverPanel;
 
     private TargetSystem _targetSystem;
     private EntityManager _entityManager;
 
-    public void Start()
+    private void Start()
     {
         _entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
         _targetSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<TargetSystem>();        
         _targetSystem.Enabled = false;
+    }
+
+    private void Update()
+    {
+        // Query existing Red units
+        EntityQuery r_query = _entityManager.CreateEntityQuery(typeof(RedTag));
+        NativeArray<Entity> r_entities = r_query.ToEntityArray(Allocator.TempJob);
+
+        // Query existing Blue units
+        EntityQuery b_query = _entityManager.CreateEntityQuery(typeof(BlueTag));
+        NativeArray<Entity> b_entities = b_query.ToEntityArray(Allocator.TempJob);
+
+        // Only check if game is over when TargetSystem is running
+        if(World.DefaultGameObjectInjectionWorld.Unmanaged.GetExistingSystemState<TargetSystem>().Enabled == true)
+        {
+            // Check if player won or lost
+            if (b_entities.Length > 0 && r_entities.Length == 0)
+            {
+                Victory();
+            } 
+            else if (b_entities.Length == 0)
+            {
+                Defeat();
+            }
+        }
+
     }
 
     public void StartBattle()
@@ -29,7 +58,7 @@ public class SystemHandler : MonoBehaviour
         _gamePanel.SetActive(true);
         _landingPanel.SetActive(false);
 
-        // Enable TargetSystem
+        // Start targeting, movement and battle/damage
         _targetSystem.Enabled = true;
         World.DefaultGameObjectInjectionWorld.Unmanaged.GetExistingSystemState<MovementSystem>().Enabled = true;
         World.DefaultGameObjectInjectionWorld.Unmanaged.GetExistingSystemState<BattleSystem>().Enabled = true;
@@ -42,9 +71,10 @@ public class SystemHandler : MonoBehaviour
     {
         // Update UI panels
         _gamePanel.SetActive(false);
+        _gameOverPanel.SetActive(false);
         _landingPanel.SetActive(true);
 
-        // Disable TargetSystem
+        // Stop targeting, movement and battle / damage
         _targetSystem.Enabled = false;
         World.DefaultGameObjectInjectionWorld.Unmanaged.GetExistingSystemState<MovementSystem>().Enabled = false;
         World.DefaultGameObjectInjectionWorld.Unmanaged.GetExistingSystemState<BattleSystem>().Enabled = false;
@@ -63,5 +93,48 @@ public class SystemHandler : MonoBehaviour
         // Spawn teams
         World.DefaultGameObjectInjectionWorld.Unmanaged.GetExistingSystemState<TeamSpawnerSystem>().Enabled = true;
 
+    }
+
+    /// <summary>
+    /// Display Victory Screen
+    /// </summary>
+    private void Victory()
+    {
+        GameOver();
+
+        // Enable Win text
+        Transform childWinText = _gameOverPanel.transform.Find("WinText");
+        GameObject gameObject = childWinText.gameObject;
+        gameObject.SetActive(true);
+
+    }
+
+    /// <summary>
+    /// Display Defeat Screen
+    /// </summary>
+    private void Defeat()
+    {
+        GameOver();
+
+        // Enable Lose text
+        Transform childLoseText = _gameOverPanel.transform.Find("LoseText");
+        GameObject gameObject = childLoseText.gameObject;
+        gameObject.SetActive(true);
+
+    }
+
+    /// <summary>
+    /// Updates UI panels and systems when game ends
+    /// </summary>
+    private void GameOver()
+    {
+        // Update UI panels
+        _gamePanel.SetActive(false);
+        _gameOverPanel.SetActive(true);
+
+        // Stop targeting, movement and battle / damage
+        _targetSystem.Enabled = false;
+        World.DefaultGameObjectInjectionWorld.Unmanaged.GetExistingSystemState<MovementSystem>().Enabled = false;
+        World.DefaultGameObjectInjectionWorld.Unmanaged.GetExistingSystemState<BattleSystem>().Enabled = false;
     }
 }
