@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
@@ -9,14 +7,13 @@ using UnityEngine;
 /// </summary>
 public class SystemHandler : MonoBehaviour
 {
-    private TargetSystem _targetSystem;
-
     [SerializeField]
     public GameObject _gamePanel;
 
     [SerializeField]
     public GameObject _landingPanel;
 
+    private TargetSystem _targetSystem;
     private EntityManager _entityManager;
 
     public void Start()

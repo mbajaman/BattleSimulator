@@ -1,15 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
 
+/// <summary>
+/// Loads team formations on button click before battle start
+/// Reads the Team scriptable Object and updates each Unit entities position
+/// </summary>
 public class RedTeamFormationHandler : MonoBehaviour
 {
     private TeamSO _redTeam;
 
-    // Start is called before the first frame update
     public void LoadTeam()
     {
         var teamName = gameObject.name;
@@ -17,11 +18,13 @@ public class RedTeamFormationHandler : MonoBehaviour
 
         EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
+        // Query all Red units
         EntityQuery query = entityManager.CreateEntityQuery(typeof(RedTag));
 
         NativeArray<Entity> entities = query.ToEntityArray(Allocator.TempJob);
 
         int idx = 0;
+
         foreach (Entity entity in entities)
         {
             Debug.Log("Entity ID: " + entity.Index);
