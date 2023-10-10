@@ -41,7 +41,7 @@ public class RedTeamListUI : MonoBehaviour
             childTextComponent.text = _redTeamManager.teams[i].name;
 
             // Increase Content view size if at least 5 teams are loaded in.
-            if (i >= 5)
+            if (i > 3)
             {
                 _scrollContentView.sizeDelta = new Vector2(_scrollContentView.sizeDelta.x, _scrollContentView.sizeDelta.y + newHeight);
             }
