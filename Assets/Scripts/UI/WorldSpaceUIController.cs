@@ -1,13 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Entities;
-using Unity.IO.LowLevel.Unsafe;
 using Unity.Mathematics;
-using Unity.Transforms;
-using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class WorldSpaceUIController : MonoBehaviour
 {
@@ -34,16 +29,6 @@ public class WorldSpaceUIController : MonoBehaviour
     private void OnDisable()
     {
         if (World.DefaultGameObjectInjectionWorld == null) return;
-    }
-
-    private void DisplayHealth(int currentHealth, float3 position)
-    {
-        var directionToCamera = (Vector3) position - _mainCameraTransform.position;
-        var rotationToCamera = Quaternion.LookRotation(directionToCamera, Vector3.up);
-        var newDisplay = Instantiate(_currentHealthPrefab, position, rotationToCamera, transform);
-        var newDisplayText = newDisplay.GetComponent<TextMeshProUGUI>();
-        newDisplayText.text = currentHealth.ToString();
-        Destroy(newDisplay);
     }
 
     private void Update()

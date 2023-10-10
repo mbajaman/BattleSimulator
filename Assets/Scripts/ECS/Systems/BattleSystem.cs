@@ -42,13 +42,11 @@ public partial struct BattleSystem : ISystem
             {
                 if (_timer >= _calculationInterval)
                 {
-                    
+
                     ecb.SetComponent(targetComponent.ValueRO.targetUnit, new HealthComponent()
                     {
                         healthPoints = SystemAPI.GetComponent<HealthComponent>(targetComponent.ValueRO.targetUnit).healthPoints - (attackComponent.ValueRO.attackDamage * attackComponent.ValueRO.attackSpeed)
                     });
-
-                    Debug.Log("Source: " + entity.Index + "\nEnemy Health: " + SystemAPI.GetComponent<HealthComponent>(targetComponent.ValueRO.targetUnit).healthPoints);
                 }
 
                 // Reset target information
@@ -81,8 +79,6 @@ public partial struct BattleSystem : ISystem
                     {
                         healthPoints = SystemAPI.GetComponent<HealthComponent>(targetComponent.ValueRO.targetUnit).healthPoints - (attackComponent.ValueRO.attackDamage * attackComponent.ValueRO.attackSpeed)
                     });
-
-                    Debug.Log("Source: " + entity.Index + "\nEnemy Health: " + SystemAPI.GetComponent<HealthComponent>(targetComponent.ValueRO.targetUnit).healthPoints);
                 }
 
                 // Reset target information

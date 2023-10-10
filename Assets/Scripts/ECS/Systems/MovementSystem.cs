@@ -46,6 +46,7 @@ public partial struct MovementSystem : ISystem
         }
     }
 
+    // Handles calculation between two floats for traversing from source to destination
     public static float3 MoveTowards(float3 current, float3 target, float step, float range)
     {
         float deltaX = target.x - current.x;
